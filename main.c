@@ -27,10 +27,10 @@ int main()
 	circularBuffer_t *cbptr;
  	ADC_init();
 
-	cbptr = malloc (sizeof (circularBuffer_t));     
-    createCircularBuffer(cbptr, 5);
+	cbptr = (circularBuffer_t *)malloc (sizeof (circularBuffer_t));     
+  createCircularBuffer(cbptr, 5);
 
-  	delay_ms(10);
+  delay_ms(10);
 	GPIOC_init_13_o ();
 	TM1637_init();	
   	TM1637_brightness(BRIGHT_TYPICAL); 
@@ -42,10 +42,9 @@ int main()
 	while (1)
 	{
 		buffer_add(cbptr, ADC_read());
-		delay_ms(10);
-    	TM1637_display_all(buffer_read(cbptr));
-		delay_ms(100);
-		
+		delay_ms(500);
+    TM1637_display_all(buffer_read(cbptr));
+		delay_ms(500);
 	}
 }
 
