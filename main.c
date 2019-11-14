@@ -1,6 +1,5 @@
-#include "buffer.h"
+#include "CircularBuffer.h"
 #include "delay.h"
-#include "buffer.h"
 #include "ADC.h"
 #include "tm1637.h"
 // Display Tm 1637 shuld be:GNG-GND, VCC-5v, DIO - B6, CLC - B7
@@ -25,23 +24,26 @@ unsigned int digit_ads = 0007;
 
 int main()
 {
+	circularBuffer_t *cbptr;
  	ADC_init();
-  delay_ms(10);
+
+	cbptr = malloc (sizeof (circularBuffer_t));     
+    createCircularBuffer(cbptr, 5);
+
+  	delay_ms(10);
 	GPIOC_init_13_o ();
 	TM1637_init();	
-  TM1637_brightness(BRIGHT_TYPICAL); 
+  	TM1637_brightness(BRIGHT_TYPICAL); 
 	delay_ms(10);
 	TM1637_display_all(digit_display0);
 	delay_ms(1000);
-	
-	test_buff_load(5);
  
 	
 	while (1)
 	{
-		buffer_add(ADC_read());
+		buffer_add(cbptr, ADC_read());
 		delay_ms(10);
-    TM1637_display_all(buffer_read());
+    	TM1637_display_all(buffer_read(cbptr));
 		delay_ms(100);
 		
 	}
